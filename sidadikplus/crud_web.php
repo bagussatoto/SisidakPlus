@@ -1,0 +1,69 @@
+<?php
+require "config/database.php";
+require "config/function.php";
+require "config/functions.crud.php";
+session_start();
+
+if ($pg == 'login') {
+    $username = mysqli_escape_string($koneksi, $_POST['username']);
+    $password = mysqli_escape_string($koneksi, $_POST['password']);
+    $siswaQ = mysqli_query($koneksi, "SELECT * FROM siswa WHERE nisn='$username'");
+    if ($username <> "" and $password <> "") {
+        if (mysqli_num_rows($siswaQ) == 0) {
+            $data = [
+                'pesan' => 'Anda belum tersiswa silahkan Hubungi Operator Sekolah!'
+            ];
+            echo json_encode($data);
+        } else {
+            $siswa = mysqli_fetch_array($siswaQ);
+            //$ceklogin=mysqli_num_rows(mysqli_query($koneksi, "select * from login where id_siswa='$siswa[id_siswa]'"));
+
+            if ($password <> $siswa['password']) {
+                $data = [
+                    'pesan' => 'Password Salah !'
+                ];
+                echo json_encode($data);
+            } else {
+                //if($ceklogin==0){
+                $_SESSION['id_siswa'] = $siswa['id_siswa'];
+                mysqli_query($koneksi, "UPDATE siswa set online='1' where id_siswa");
+                $data = [
+                    'pesan' => 'ok'
+                ];
+                echo json_encode($data);
+            }
+        }
+    }
+}
+if ($pg == 'login2') {
+
+    $username = mysqli_escape_string($koneksi, $_POST['username']);
+    $password = mysqli_escape_string($koneksi, $_POST['password']);
+    $siswaQ = mysqli_query($koneksi, "SELECT * FROM siswa WHERE no_siswa='$username'");
+    if ($username <> "" and $password <> "") {
+        if (mysqli_num_rows($siswaQ) == 0) {
+            $data = [
+                'pesan' => 'Anda belum tersiswa silahkan Hubungi Operator Sekolah!'
+            ];
+            echo json_encode($data);
+        } else {
+            $siswa = mysqli_fetch_array($siswaQ);
+            //$ceklogin=mysqli_num_rows(mysqli_query($koneksi, "select * from login where id_siswa='$siswa[id_siswa]'"));
+
+            if ($password <> $siswa['password']) {
+                $data = [
+                    'pesan' => 'Password Salah !'
+                ];
+                echo json_encode($data);
+            } else {
+                //if($ceklogin==0){
+                $_SESSION['id_siswa'] = $siswa['id_siswa'];
+                mysqli_query($koneksi, "UPDATE siswa set online='1' where id_siswa='$siswa[id_siswa]'");
+                $data = [
+                    'pesan' => 'ok'
+                ];
+                echo json_encode($data);
+            }
+        }
+    }
+}
